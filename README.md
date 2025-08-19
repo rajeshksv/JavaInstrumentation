@@ -14,11 +14,14 @@ ByteBuddy is a code generation library for creating Java classes during the runt
 
 ```
 src/main/java/com/example/bytebuddy/
-├── MethodInstrumentation.java      # Basic instrumentation with Java agent support
+├── MethodInstrumentation.java          # Basic instrumentation with Java agent support
 ├── AdvancedMethodInstrumentation.java  # Advanced instrumentation with timing
-├── SampleTargetClass.java          # Target class to be instrumented
-├── InstrumentationDemo.java        # Basic demo
-└── AdvancedDemo.java               # Advanced demo with statistics
+├── StackAwareInstrumentation.java      # Stack-aware instrumentation with call hierarchy
+├── SampleTargetClass.java              # Target class to be instrumented
+├── NestedTargetClass.java              # Target class with nested method calls
+├── InstrumentationDemo.java            # Basic demo
+├── AdvancedDemo.java                   # Advanced demo with statistics
+└── StackAwareDemo.java                 # Stack-aware demo with call hierarchy
 ```
 
 ## Key Components
@@ -44,6 +47,13 @@ Target class with various method types:
 - Methods with multiple arguments
 - Methods that throw exceptions
 - Static methods
+
+### 4. NestedTargetClass.java
+Target class with nested method calls:
+- Deep call hierarchies
+- Method chains
+- Exception handling
+- Complex workflows
 
 ## Usage Examples
 
@@ -84,6 +94,25 @@ target.calculateSum(10, 20);
 AdvancedMethodInstrumentation.printStatistics();
 ```
 
+### Stack-Aware Instrumentation (Most Advanced)
+
+```java
+// Create instrumented class with stack-aware advice
+Class<?> instrumentedClass = new ByteBuddy()
+    .subclass(NestedTargetClass.class)
+    .method(ElementMatchers.any())
+    .intercept(Advice.to(StackAwareInstrumentation.class))
+    .make()
+    .load(ClassLoader.getSystemClassLoader())
+    .getLoaded();
+
+// Use and get call hierarchy information
+NestedTargetClass target = (NestedTargetClass) instrumentedClass
+    .getDeclaredConstructor().newInstance();
+target.processData("test");
+StackAwareInstrumentation.printStatistics();
+```
+
 ## Running the Examples
 
 ### Prerequisites
@@ -111,6 +140,12 @@ java -cp "target/classes:$(mvn dependency:build-classpath -Dmdep.outputFile=/dev
 ```bash
 mvn clean compile
 java -cp "target/classes:$(mvn dependency:build-classpath -Dmdep.outputFile=/dev/stdout -q)" com.example.bytebuddy.SimpleTest
+```
+
+### Run Stack-Aware Demo (Most Advanced)
+```bash
+mvn clean compile
+java -cp "target/classes:$(mvn dependency:build-classpath -Dmdep.outputFile=/dev/stdout -q)" com.example.bytebuddy.StackAwareDemo
 ```
 
 ## Java Agent Usage
@@ -175,6 +210,20 @@ Executing simpleMethod with input: Hello World
 =====================
 SampleTargetClass.simpleMethod | Calls: 3 | Avg Time: 1.15 ms
 SampleTargetClass.calculateSum | Calls: 3 | Avg Time: 0.89 ms
+```
+
+### Stack-Aware Instrumentation Output
+```
+🔵 ENTRY | main | NestedTargetClass.complexWorkflow | Args: none | Depth: 0
+🔵 ENTRY | main |   NestedTargetClass.processData ← NestedTargetClass.complexWorkflow | Args: "test123" | Depth: 1
+    📍 Call Stack: NestedTargetClass.complexWorkflow → NestedTargetClass.processData
+🔴 EXIT  | main |   NestedTargetClass.processData | ✅ Return: null | Duration: 427.71 μs | Depth: 1
+🔴 EXIT  | main | NestedTargetClass.complexWorkflow | ✅ Return: null | Duration: 0 ns | Depth: 0
+
+📊 METHOD STATISTICS WITH CALL HIERARCHY:
+=========================================
+NestedTargetClass.processData | Calls: 1 | Avg Time: 427.71 μs
+NestedTargetClass.complexWorkflow | Calls: 1 | Avg Time: 0 ns
 ```
 
 ## Best Practices
