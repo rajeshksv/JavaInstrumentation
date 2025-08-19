@@ -1,0 +1,8 @@
+com/example/bytebuddy/SimpleTest.class
+com/example/bytebuddy/InstrumentationDemo.class
+com/example/bytebuddy/AdvancedMethodInstrumentation.class
+com/example/bytebuddy/SampleTargetClass.class
+com/example/bytebuddy/TestAdvanced.class
+com/example/bytebuddy/MethodInstrumentation$MethodAdvice.class
+com/example/bytebuddy/AdvancedDemo.class
+com/example/bytebuddy/MethodInstrumentation.class
