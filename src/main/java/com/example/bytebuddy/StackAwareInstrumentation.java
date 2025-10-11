@@ -14,8 +14,7 @@ public class StackAwareInstrumentation {
 
     // Thread-local storage for call stack
     public static final ThreadLocal<Stack<MethodCallInfo>> callStack = new ThreadLocal<>();
-    public static final ThreadLocal<String> requestStack = ThreadLocal.withInitial(() -> "FK Plus User");
-    public static final ThreadLocal<String> flowStack = ThreadLocal.withInitial(() -> "Flow1");
+    
     
     // Thread-local storage for method entry timestamps
     public static final ThreadLocal<Long> methodStartTime = new ThreadLocal<>();
@@ -23,6 +22,10 @@ public class StackAwareInstrumentation {
     // Statistics tracking
     public static final ConcurrentHashMap<String, AtomicLong> methodCallCount = new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<String, AtomicLong> methodTotalTime = new ConcurrentHashMap<>();
+
+    // Hardcoded, but can be set at entry points
+    public static final ThreadLocal<String> requestStack = ThreadLocal.withInitial(() -> "FK Plus User");
+    public static final ThreadLocal<String> flowStack = ThreadLocal.withInitial(() -> "Flow1");
 
 
     /**
