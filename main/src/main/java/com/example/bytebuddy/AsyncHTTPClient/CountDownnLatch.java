@@ -14,9 +14,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ScatterGather {
+public class CountDownnLatch {
 
     public static List<String> fetchAllUrls(List<String> urls) 
             throws InterruptedException, IOException, ExecutionException {
@@ -31,6 +32,8 @@ public class ScatterGather {
         // 3. Setup synchronization for the main thread
         final CountDownLatch latch = new CountDownLatch(urls.size());
         final AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
+        final AtomicInteger successCount = new AtomicInteger(0);
+
 
         System.out.println("Starting all " + urls.size() + " requests concurrently...");
         
@@ -43,8 +46,14 @@ public class ScatterGather {
                 @Override
                 public void completed(final HttpResponse response) {
                     try {
+                        successCount.incrementAndGet();
+
+                        String status = response.getStatusLine().toString();
                         String content = EntityUtils.toString(response.getEntity());
-                        allResponses.add("URL: " + url + ", Status: " + response.getStatusLine().getStatusCode() + ", Content Size: " + content.length() + ", Response: " + content);
+                        long duration = System.currentTimeMillis() - startTime.get();
+
+                        System.out.printf("[%s] SUCCESS: Status=%s, Size=%d bytes, Duration=%d ms\n", Thread.currentThread().getName(), status, response.getEntity().getContentLength(), duration);
+                        allResponses.add("URL: " + url + ", Status: " + response.getStatusLine().getStatusCode() + ", Content Size: " + response.getEntity().getContentLength() + ", Response: " + response.getEntity().getContent());
                         
                     } catch (IOException e) {
                         // Handle the error by calling failed()
@@ -77,6 +86,8 @@ public class ScatterGather {
         long totalTime = System.currentTimeMillis() - startTime.get();
         System.out.println("------------------------------------");
         System.out.printf("All requests processed. Total time: %d ms\n", totalTime);
+        System.out.printf("Successful requests: %d\n", successCount.get());
+
 
         return allResponses;
     }

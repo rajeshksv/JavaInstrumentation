@@ -5,20 +5,18 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>bytebuddy-instrumentation</artifactId>
-    <version>1.0.0</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>main</module>
-        <module>netty-tcp</module>
-        <module>netty-udp</module>
-    </modules>
+    <parent>
+        <groupId>com.example</groupId>
+        <artifactId>bytebuddy-instrumentation</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>main</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <bytebuddy.version>1.14.11</bytebuddy.version>
     </properties>
 
     <dependencies>
@@ -36,8 +34,6 @@
             <version>${bytebuddy.version}</version>
         </dependency>
 
-
-
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -50,15 +46,14 @@
             <version>1.2.12</version>
         </dependency>
 
-
-                <!-- Netty dependencies -->
+        <!-- Netty dependencies -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.100.Final</version>
         </dependency>
 
-         <!-- JSON processing for RPC messages -->
+        <!-- JSON processing for RPC messages -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -119,14 +114,11 @@
                     <target>8</target>
                 </configuration>
             </plugin>
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
-                <configuration>
-                    <mainClass>com.example.bytebuddy.InstrumentationDemo</mainClass>
-                </configuration>
-            </plugin> -->
+            </plugin>
         </plugins>
     </build>
 </project>
