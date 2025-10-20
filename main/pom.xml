@@ -81,6 +81,13 @@
             <version>4.4.6</version>
         </dependency>
 
+        <!-- Vert.x Web -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+            <version>4.4.6</version>
+        </dependency>
+
         <!-- Project Reactor Core -->
         <dependency>
             <groupId>io.projectreactor</groupId>
