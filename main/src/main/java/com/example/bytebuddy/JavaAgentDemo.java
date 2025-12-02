@@ -11,7 +11,7 @@ import java.lang.instrument.Instrumentation;
  * Advanced demo showing sophisticated ByteBuddy instrumentation using AgentBuilder
  * This demonstrates how to use AgentBuilder for runtime class transformation
  */
-public class AdvancedDemoWithAgentBuilder {
+public class JavaAgentDemo {
 
     public static void main(String[] args) throws Exception {
         System.out.println("=== Advanced ByteBuddy Instrumentation Demo (AgentBuilder) ===\n");
@@ -30,22 +30,6 @@ public class AdvancedDemoWithAgentBuilder {
                 })
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                 .installOn(instrumentation);
-
-        // Force retransformation if class is already loaded
-        // This is needed because the class might be loaded before agent installation
-        try {
-            Class<?> targetClass = Class.forName("com.example.bytebuddy.SampleTargetClass", false, 
-                    Thread.currentThread().getContextClassLoader());
-            if (instrumentation.isModifiableClass(targetClass)) {
-                instrumentation.retransformClasses(targetClass);
-                System.out.println("✓ Retransformed SampleTargetClass (if already loaded)\n");
-            }
-        } catch (ClassNotFoundException e) {
-            // Class not loaded yet - AgentBuilder will handle it on first load
-            System.out.println("✓ AgentBuilder will instrument SampleTargetClass on first load\n");
-        } catch (Exception e) {
-            System.out.println("⚠ Warning: " + e.getMessage() + "\n");
-        }
 
         // Load and create instance - AgentBuilder will intercept if not already loaded
         Class<?> targetClass = Class.forName("com.example.bytebuddy.SampleTargetClass");
